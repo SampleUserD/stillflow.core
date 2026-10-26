@@ -1,0 +1,1 @@
+export const REMOVE_MARKER = { 'remove': true }
