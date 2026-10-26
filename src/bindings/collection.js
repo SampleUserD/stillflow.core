@@ -29,17 +29,20 @@ export class Collection {
   }
 
   force_remove(delta) {
-    for (const item of delta) {
-      const binding = this._bindings.get(item)
+    for (const view of delta) {
+      const binding = this._bindings.get(view)
 
       binding.unmount()
 
-      this._bindings.delete(item)
+      this._bindings.delete(view)
     }
   }
 
   force_swap(delta) {
-    for (const [x, y] of delta.entries()) {
+    for (const [i, j] of delta.entries()) {
+      const x = this._items.at(i)
+      const y = this._items.at(j)
+
       const a = this._bindings.get(x)
       const b = this._bindings.get(y)
 
@@ -49,8 +52,8 @@ export class Collection {
   }
 
   force_update(delta) {
-    for (const [from, to] of delta) {
-      this._bindings.get(from).update(to)
+    for (const [view, reference] of delta) {
+      this._bindings.get(view).update(reference)
     }
   }
 

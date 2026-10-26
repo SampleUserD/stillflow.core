@@ -12,6 +12,12 @@ class ClonableTextBinding {
   }
 
   update(view) {
+    if (view.selected) {
+      this._element.style.background = 'red'
+    } else {
+      this._element.style.background = String()
+    }
+
     this._element.childNodes[0].nodeValue = `[${view.x}, ${view.y}]`
   }
 
@@ -52,11 +58,13 @@ const stillflow = Stillflow(State())
 
 const vx = stillflow.make('x')
 const vy = stillflow.make('y')
+const vselected = stillflow.make('selected')
 const vnodes = stillflow.make('nodes')
 
 const schema = stillflow.compiles({
   x: vx.once(),
-  y: vy.once()
+  y: vy.once(),
+  selected: vselected.once()
 })
 
 const root = new DOM(stillflow, document.body)
@@ -72,13 +80,17 @@ const collection = new Collection({
   each: () => new TextBinding()
 })
 
-for (let index = 0; index < 50000; index++) {
-  stillflow.write_uncommited([vx, index], [vy, index * 2])
+for (let index = 0; index < 1000; index++) {
+  stillflow.write_uncommited([vx, index], [vy, index * 2], [vselected, index === 5])
 
   nodes.add(stillflow.builds(schema))
 }
 
+stillflow.write_uncommited([vx, 10000], [vy, 10000], [vselected, false])
+
+nodes.swap(1, 998)
+nodes.replace(4, stillflow.builds(schema))
+
 collection.mount()
 
 nodes.flush()
-
