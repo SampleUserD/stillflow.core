@@ -17,6 +17,10 @@ export function Stillflow(state) {
 
   kernel.on_commit(updates)
 
+  const on = (event, site) => bus.subscribe(event, site)
+
+  const send = (event, payload) => bus.dispatch(event, payload)
+
   const local = value => ({ local: true, value })
 
   const compiles = schema => compile(schema)
@@ -42,6 +46,8 @@ export function Stillflow(state) {
   const make = path => Path(kernel, path)
 
   return {
+    on,
+    send,
     kernel,
     compiles,
     make,
